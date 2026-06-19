@@ -140,6 +140,50 @@ export default function Home() {
         </div>
       </section >
 
+      {/* PRICING */}
+      <section id="pricing" style={{ background: "var(--bg-soft)" }}>
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">Pricing</span>
+            <h2>Choose Your Plan</h2>
+            <p>Start for free, or unlock unlimited bulk processing with Premium.</p>
+          </div>
+          <div className="grid" style={{ maxWidth: '800px', margin: '0 auto', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))' }}>
+            {/* Free Plan */}
+            <div className="card" style={{ padding: '40px 24px', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+              <h3 style={{ fontSize: '24px', marginBottom: '8px' }}>Free Plan</h3>
+              <div style={{ fontSize: '48px', fontWeight: '800', margin: '16px 0', color: 'var(--text)' }}>₹0<span style={{ fontSize: '16px', color: 'var(--muted)', fontWeight: 'normal' }}>/mo</span></div>
+              <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>Essential tools for single file removal.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left', marginBottom: '32px', flexGrow: 1 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> Single Image Processing</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> Single Video Processing</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> 100% Private (Local Browser)</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--muted)' }}><span style={{ color: 'var(--brand-3)', fontWeight: 'bold' }}>✗</span> Multi-file Processing</span>
+              </div>
+              <a className="btn btn-ghost" style={{ width: '100%' }} href="/image">Start Free</a>
+            </div>
+
+            {/* Premium Plan */}
+            <div className="card" style={{ padding: '40px 24px', border: '2px solid var(--brand)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)', background: 'var(--brand)', color: 'white', padding: '4px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Early Access Offer</div>
+              <h3 style={{ fontSize: '24px', marginBottom: '8px' }}>Premium</h3>
+              <div style={{ fontSize: '48px', fontWeight: '800', margin: '16px 0', color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '24px', color: 'var(--muted)', textDecoration: 'line-through' }}>₹99</span>
+                <span>₹0<span style={{ fontSize: '16px', color: 'var(--muted)', fontWeight: 'normal' }}>/mo</span></span>
+              </div>
+              <p style={{ color: 'var(--brand)', fontWeight: '700', marginBottom: '24px' }}>Free for a few days!</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left', marginBottom: '32px', flexGrow: 1 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> Single &amp; Multi Image Processing</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> Single &amp; Multi Video Processing</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> Unlimited Bulk Processing</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text)' }}><span className="check" style={{ color: 'var(--accent)' }}>✓</span> 100% Private (Local Browser)</span>
+              </div>
+              <a className="btn btn-primary" style={{ width: '100%', background: 'linear-gradient(120deg, var(--brand), var(--brand-2))', border: 'none', color: '#fff' }} href="/multi-image">Claim Free Offer Now</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       < section id="faq" >
         <div className="wrap">

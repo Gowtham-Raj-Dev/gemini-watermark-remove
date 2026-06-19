@@ -21,14 +21,14 @@ export default function Footer() {
             <a href="/termsandconditions" style={{ color: 'var(--muted, #a1a1aa)', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text, #f4f4f5)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--muted, #a1a1aa)'}>Terms & Conditions</a>
           </div>
           <div style={{ color: 'var(--muted, #a1a1aa)', fontFamily: 'monospace, "Courier New"', fontSize: '13px' }}>
-            © 2026 codelove.in . All rights reserved.
+            © 2026 <a href="https://codelove.in" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', textUnderlineOffset: '2px', color: 'var(--text, #f4f4f5)', transition: 'color 0.2s' }}>codelove.in</a> . All rights reserved.
           </div>
           <div style={{ fontWeight: 600, color: 'var(--text, #f4f4f5)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
             <span>Developed with</span>
             <span style={{ color: '#ef4444', fontSize: '16px' }}>❤️</span>
             <span style={{ color: '#3b82f6', letterSpacing: '-1px' }}>&lt;&gt;</span>
             <span>by</span>
-            <a href="https://gowtham.codelovein/" style={{ textDecoration: 'underline', textUnderlineOffset: '4px', color: 'var(--text, #f4f4f5)' }}>Gowtham</a>
+            <a href="https://gowtham.codelove.in/" style={{ textDecoration: 'underline', textUnderlineOffset: '4px', color: 'var(--text, #f4f4f5)' }}>Gowtham</a>
           </div>
         </div>
       </div>
