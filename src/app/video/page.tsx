@@ -47,55 +47,74 @@ export default function VideoPreview() {
 
       {/* VIDEO APP SHELL */}
       <div className="shell video-preview-shell" style={{ paddingTop: 0 }}>
+        
+        {/* DROPZONE */}
+        <div id="dropzone" className="dropzone" data-dragging="false" role="button" tabIndex={0} style={{ padding: "46px 24px", opacity: isEngineLoading ? 0.6 : 1, pointerEvents: isEngineLoading ? 'none' : 'auto', marginBottom: '28px' }}>
+          <div className="icon" style={{ color: 'var(--brand)' }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          </div>
+          <h3 style={{ fontSize: '19px', margin: '0 0 6px 0' }}>Drag & drop a video here</h3>
+          <p style={{ color: 'var(--muted)', fontSize: '14px', margin: 0 }}>or click to browse — processing happens 100% on your device</p>
+          <div className="formats" style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '16px' }}>
+            <span className="fmt" style={{ fontSize: '12px', color: 'var(--muted)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '7px', background: 'var(--bg-soft)' }}>MP4</span>
+            <span className="fmt" style={{ fontSize: '12px', color: 'var(--muted)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '7px', background: 'var(--bg-soft)' }}>WebM</span>
+            <span className="fmt" style={{ fontSize: '12px', color: 'var(--muted)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '7px', background: 'var(--bg-soft)' }}>MOV</span>
+          </div>
+          <input id="fileInput" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" hidden disabled={isEngineLoading} />
+        </div>
+
         <main className="layout">
+          {/* LEFT: VERTICAL PLAYER GRID */}
           <section className="workspace" aria-label="Video Comparison">
             <div className="panel">
               <div className="panel-head"><span>Before / After Comparison</span><span id="progressText" style={{ color: "var(--brand-dark)", fontSize: '13px' }}>Waiting for video</span></div>
-              <div id="comparePlayer" className="compare-player">
+              
+              <div id="comparePlayer" className="compare-player" style={{ borderBottom: '1px solid var(--border)', aspectRatio: '21/9' }}>
                 <div className="compare-pane" style={{ background: "transparent" }}>
-                  <video id="originalVideo" loop playsInline preload="metadata" style={{ borderRadius: "8px 0 0 0" }}></video>
-                  <span className="badge">Before</span>
-                  <div id="originalEmpty" className="empty">Select or drop a video</div>
+                  <span className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }}>Before</span>
+                  <video id="originalVideo" loop playsInline preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
+                  <div id="originalEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '13px' }}>Select or drop a video</div>
                 </div>
                 <div className="compare-pane" style={{ background: "transparent", borderLeft: "1.5px solid var(--border)" }}>
-                  <video id="processedVideo" loop playsInline preload="metadata" muted style={{ borderRadius: "0 8px 0 0" }}></video>
-                  <span id="afterBadge" className="badge" hidden>After</span>
-                  <div id="processedEmpty" className="empty">Comparison will be shown here</div>
+                  <span id="afterBadge" className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }} hidden>After</span>
+                  <video id="processedVideo" loop playsInline preload="metadata" muted style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
+                  <div id="processedEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '13px' }}>Comparison will be shown here</div>
                 </div>
               </div>
+              
               <div className="compare-controls">
                 <button id="playPauseBtn" className="play-toggle" type="button" data-playing="false" aria-label="Play" disabled></button>
                 <input id="scrubber" type="range" min="0" max="1000" defaultValue="0" aria-label="Play Progress" disabled />
                 <span id="timeLabel" className="time-label">0:00</span>
               </div>
             </div>
-
-
           </section>
 
+          {/* RIGHT: SETTINGS / STATUS PANEL */}
           <aside className="side" aria-label="Processing Settings">
-            <div id="dropzone" className="dropzone" data-dragging="false" role="button" tabIndex={0} style={{ padding: "32px 24px", opacity: isEngineLoading ? 0.6 : 1, pointerEvents: isEngineLoading ? 'none' : 'auto' }}>
-              <div className="icon" style={{ color: 'var(--brand)' }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              </div>
-              <strong>Select Video File</strong>
-              <span className="muted" style={{ display: "block", marginTop: 6 }}>MP4, WebM, MOV. Best results with 10-sec samples.</span>
-              <input id="fileInput" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" hidden disabled={isEngineLoading} />
-            </div>
-
             <div className="panel">
-              <div className="panel-head">Auto Processing</div>
+              <div className="panel-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Controls & Status</span>
+              </div>
               <div className="controls">
-                <div className="progress" aria-label="Processing Progress"><span id="progressBar" style={{ width: isEngineLoading ? '100%' : '0%', background: isEngineLoading ? 'var(--border)' : '' }}></span></div>
-                <div id="status" className="status" data-tone="info">
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--muted)' }}>Processing Status</span>
+                </div>
+                <div className="progress" aria-label="Processing Progress"><span id="progressBar" style={{ width: isEngineLoading ? '100%' : '0%', background: isEngineLoading ? 'var(--border)' : 'var(--accent)' }}></span></div>
+                <div id="status" className="status" data-tone="info" style={{ marginTop: '16px', textAlign: 'center', fontSize: '13px', padding: '10px', background: 'var(--bg-soft)', borderRadius: '8px', border: '1px solid var(--border)' }}>
                   {isEngineLoading ? "Loading..." : "Ready to process"}
                 </div>
-                <div className="actions" style={{ marginTop: 8 }}>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '24px auto 12px' }}>
                   <button id="detectBtn" type="button" className="btn btn-ghost" style={{ display: "none" }}>Detect</button>
-                  <button id="resetBtn" type="button" className="btn btn-ghost" style={{ width: "100%", gridColumn: "span 2", padding: "8px", fontSize: "13px" }}>Reset</button>
-                  <button id="processBtn" className="btn btn-primary" type="button" style={{ gridColumn: "span 2", marginTop: 4, width: "100%" }}>Auto Clean & Export</button>
-                  <a id="downloadBtn" className="btn btn-primary" style={{ gridColumn: "span 2", background: "var(--accent)", display: "none" }} aria-disabled="true">Download Result</a>
+                  <button id="resetBtn" type="button" className="btn btn-ghost" style={{ width: '100%', padding: '12px' }}>Change File</button>
+                  <button id="processBtn" className="btn btn-primary" type="button" style={{ width: '100%', padding: '12px' }}>Auto Clean & Export</button>
+                  <a id="downloadBtn" className="btn btn-primary" style={{ background: "var(--accent)", display: "none", width: '100%', padding: '12px', justifyContent: 'center' }} aria-disabled="true">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download Result
+                  </a>
                 </div>
+
                 <div className="internal-controls" hidden>
                   <span id="alphaGainValue">1.00</span>
                   <input id="alphaGain" type="range" min="0.25" max="1.35" step="0.05" />
@@ -123,7 +142,7 @@ export default function VideoPreview() {
                   <input id="allowLowConfidence" type="checkbox" />
                 </div>
               </div>
-              <div className="note" style={{ fontSize: "12px" }}>Video track will be re-encoded locally. Original audio track is passed through.</div>
+              <div className="note" style={{ fontSize: "12px", textAlign: "center", borderTop: '1px solid var(--border)', padding: '12px' }}>Video track is re-encoded. Audio passed through.</div>
             </div>
 
             <div className="panel" style={{ display: 'none' }}>

@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  metadataBase: new URL("https://gowtham-raj-dev.github.io/gemini-watermark-remove"),
+  metadataBase: new URL("https://geminiwatermarkremover.codelove.in"),
   icons: {
-    icon: "https://gowtham-raj-dev.github.io/gemini-watermark-remove/favicon.ico",
+    icon: "/favicon.ico",
   },
 };
 

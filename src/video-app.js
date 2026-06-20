@@ -49,7 +49,8 @@ const state = {
     detection: null,
     running: false,
     jobId: 0,
-    syncingPlayback: false
+    syncingPlayback: false,
+    fileCache: new Map()
 };
 
 const allenkFdncnnRuntimePromises = new Map();
@@ -452,6 +453,15 @@ function renderDetection(detection) {
 function cleanupUrls() {
     if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
     if (state.processedUrl) URL.revokeObjectURL(state.processedUrl);
+    
+    if (state.fileCache) {
+        state.fileCache.forEach(cache => {
+            if (cache.originalUrl && cache.originalUrl !== state.originalUrl) URL.revokeObjectURL(cache.originalUrl);
+            if (cache.processedUrl && cache.processedUrl !== state.processedUrl) URL.revokeObjectURL(cache.processedUrl);
+        });
+        state.fileCache.clear();
+    }
+    
     state.originalUrl = null;
     state.processedUrl = null;
 }
@@ -493,6 +503,31 @@ function renderFileQueue() {
             <span class="status-badge" id="queue-status-${idx}">Pending</span>
         `;
         
+        // If it's already cached with a processed URL, add the download button
+        const cacheEntry = state.fileCache.get(idx);
+        if (cacheEntry && cacheEntry.processedUrl) {
+            const downBtn = document.createElement('a');
+            downBtn.href = cacheEntry.processedUrl;
+            downBtn.download = `${f.name.replace(/\\.[^.]+$/, '')}_gwr_video_mvp.mp4`;
+            downBtn.className = 'btn btn-primary download-queue-btn';
+            downBtn.style.padding = '4px 10px';
+            downBtn.style.fontSize = '12px';
+            downBtn.style.marginLeft = '12px';
+            downBtn.textContent = 'Download';
+            downBtn.addEventListener('click', (e) => e.stopPropagation());
+            
+            const infoDiv = item.querySelector('.info');
+            if (infoDiv) {
+                infoDiv.appendChild(downBtn);
+            }
+            
+            const badge = item.querySelector(`#queue-status-${idx}`);
+            if (badge) {
+                badge.className = 'status-badge done';
+                badge.textContent = 'Done';
+            }
+        }
+        
         item.addEventListener('click', () => {
             if (state.running) return;
             if (state.fileIndex === idx && state.file === state.files[idx]) return;
@@ -528,6 +563,7 @@ export function updateQueueItemStatus(index, statusClass, statusText) {
 
 function setFiles(files) {
     if (!files || files.length === 0) return;
+    cleanupUrls();
     state.files = files;
     state.fileIndex = 0;
     renderFileQueue();
@@ -545,7 +581,10 @@ async function setFile(file, isBatchNext = false) {
         return;
     }
 
-    cleanupUrls();
+    if (!state.files.includes(file)) {
+        cleanupUrls();
+    }
+
     state.file = file;
     state.metadata = null;
     state.detection = null;
@@ -554,38 +593,73 @@ async function setFile(file, isBatchNext = false) {
         state.jobId++;
     }
 
-    state.originalUrl = URL.createObjectURL(file);
+    const cacheEntry = state.fileCache.get(state.fileIndex) || {};
+    
+    state.originalUrl = cacheEntry.originalUrl || URL.createObjectURL(file);
+    if (!cacheEntry.originalUrl) {
+        cacheEntry.originalUrl = state.originalUrl;
+        state.fileCache.set(state.fileIndex, cacheEntry);
+    }
+
     els.originalVideo.src = state.originalUrl;
     els.originalVideo.currentTime = 0;
-    els.processedVideo.removeAttribute('src');
+    
+    if (cacheEntry.processedUrl) {
+        state.processedUrl = cacheEntry.processedUrl;
+        els.processedVideo.src = state.processedUrl;
+        els.downloadBtn.href = state.processedUrl;
+        els.downloadBtn.download = `${state.file.name.replace(/\\.[^.]+$/, '')}_gwr_video_mvp.mp4`;
+        els.processedEmpty.hidden = true;
+    } else {
+        els.processedVideo.removeAttribute('src');
+        els.downloadBtn.removeAttribute('href');
+        els.downloadBtn.removeAttribute('download');
+        els.processedEmpty.hidden = false;
+    }
+
     els.processedVideo.load();
-    els.downloadBtn.removeAttribute('href');
-    els.downloadBtn.removeAttribute('download');
     els.originalEmpty.hidden = true;
     
     updateQueueActiveItem();
     updateCompareMode();
-    renderMetadata(null);
-    renderDetection(null);
-    setProgress(0, 'Ready');
-    setStatus('Reading video metadata...');
+    
+    if (cacheEntry.metadata) {
+        state.metadata = cacheEntry.metadata;
+        renderMetadata(state.metadata);
+    } else {
+        renderMetadata(null);
+    }
+    
+    if (cacheEntry.detection) {
+        state.detection = cacheEntry.detection;
+        renderDetection(state.detection);
+    } else {
+        renderDetection(null);
+    }
+    
+    setProgress(cacheEntry.processedUrl ? 1 : 0, cacheEntry.processedUrl ? 'Complete' : 'Ready');
+    setStatus(cacheEntry.processedUrl ? 'Watermark removal complete! Video ready.' : 'Reading video metadata...');
     updateButtons();
 
-    try {
-        const metadata = await inspectGeminiVideoFile(file);
-        state.metadata = metadata;
-        renderMetadata(metadata);
-        applyAutomaticPreset(null, metadata, { silent: true });
-        let fileCountText = '';
-        if (state.files && state.files.length > 1) {
-             fileCountText = ` (File ${state.fileIndex + 1} of ${state.files.length})`;
+    if (!cacheEntry.metadata) {
+        try {
+            const metadata = await inspectGeminiVideoFile(file);
+            state.metadata = metadata;
+            cacheEntry.metadata = metadata;
+            state.fileCache.set(state.fileIndex, cacheEntry);
+            renderMetadata(metadata);
+            applyAutomaticPreset(null, metadata, { silent: true });
+            let fileCountText = '';
+            if (state.files && state.files.length > 1) {
+                 fileCountText = ` (File ${state.fileIndex + 1} of ${state.files.length})`;
+            }
+            setStatus(`Video loaded${fileCountText}, click export to remove watermark.`);
+        } catch (error) {
+            console.error(error);
+            setStatus(error.message || 'Failed to read video', 'error');
+        } finally {
+            updateButtons();
         }
-        setStatus(`Video loaded${fileCountText}, click export to remove watermark.`);
-    } catch (error) {
-        console.error(error);
-        setStatus(error.message || 'Failed to read video', 'error');
-    } finally {
-        updateButtons();
     }
 }
 
@@ -645,6 +719,12 @@ async function runDetection() {
         if (jobId !== state.jobId) return;
         state.metadata = result.metadata;
         state.detection = result.detection;
+        
+        const cacheEntry = state.fileCache.get(state.fileIndex) || {};
+        cacheEntry.metadata = result.metadata;
+        cacheEntry.detection = result.detection;
+        state.fileCache.set(state.fileIndex, cacheEntry);
+        
         renderMetadata(result.metadata);
         renderDetection(result.detection);
         setProgress(1, 'Analysis complete');
@@ -682,6 +762,15 @@ async function runExport() {
             if (state.file !== fileToProcess) {
                 await setFile(fileToProcess, true);
                 if (jobId !== state.jobId) break;
+            }
+            
+            const cacheEntry = state.fileCache.get(i) || {};
+            if (cacheEntry.processedUrl) {
+                updateQueueItemStatus(i, 'done', 'Done');
+                if (state.files && state.files.length > 0) {
+                    state.fileIndex = i + 1;
+                }
+                continue;
             }
             
             updateQueueItemStatus(i, 'processing', 'Processing...');
@@ -761,15 +850,22 @@ async function runExport() {
             });
             if (jobId !== state.jobId) return;
 
-            if (state.processedUrl) URL.revokeObjectURL(state.processedUrl);
+            // if (state.processedUrl) URL.revokeObjectURL(state.processedUrl); // Caching allows us to reuse object URLs
             state.processedUrl = URL.createObjectURL(result.blob);
+            
+            const resultCacheEntry = state.fileCache.get(i) || {};
+            resultCacheEntry.processedUrl = state.processedUrl;
+            resultCacheEntry.metadata = state.metadata;
+            resultCacheEntry.detection = state.detection;
+            state.fileCache.set(i, resultCacheEntry);
+
             els.processedVideo.src = state.processedUrl;
             els.processedVideo.load();
             els.processedEmpty.hidden = true;
             updateCompareMode();
             syncProcessedToOriginal({ force: true });
             els.downloadBtn.href = state.processedUrl;
-            els.downloadBtn.download = `${state.file.name.replace(/\.[^.]+$/, '')}_gwr_video_mvp.mp4`;
+            els.downloadBtn.download = `${fileToProcess.name.replace(/\\.[^.]+$/, '')}_gwr_video_mvp.mp4`;
             
             setProgress(1, prefix + 'Complete');
             setStatus(prefix + 'Watermark removal complete! Video downloaded.', 'success');
@@ -778,6 +874,26 @@ async function runExport() {
             els.downloadBtn.click();
             
             updateQueueItemStatus(i, 'done', 'Done');
+            
+            // Add download button to the queue item if it doesn't exist
+            const queueItem = els.fileQueueList.children[i];
+            if (queueItem && !queueItem.querySelector('.download-queue-btn')) {
+                const downBtn = document.createElement('a');
+                downBtn.href = state.processedUrl;
+                downBtn.download = `${fileToProcess.name.replace(/\\.[^.]+$/, '')}_gwr_video_mvp.mp4`;
+                downBtn.className = 'btn btn-primary download-queue-btn';
+                downBtn.style.padding = '4px 10px';
+                downBtn.style.fontSize = '12px';
+                downBtn.style.marginLeft = '12px';
+                downBtn.textContent = 'Download';
+                downBtn.addEventListener('click', (e) => e.stopPropagation()); // prevent switching files
+                
+                // insert before the status badge or inside the info div
+                const infoDiv = queueItem.querySelector('.info');
+                if (infoDiv) {
+                    infoDiv.appendChild(downBtn);
+                }
+            }
             
             // Increment file index for the next iteration
             if (state.files && state.files.length > 0) {
