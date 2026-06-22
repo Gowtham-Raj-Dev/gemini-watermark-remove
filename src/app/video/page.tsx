@@ -46,7 +46,7 @@ export default function VideoPreview() {
       </section>
 
       {/* TOOL AREA */}
-      <div className="tool" id="tool" style={{ marginTop: '44px', maxWidth: '940px', margin: '44px auto 0' }}>
+      <div className="tool" id="tool" style={{ maxWidth: '940px', margin: '44px auto 0', padding: '0 24px' }}>
         
         {/* DROPZONE */}
         <div id="dropzone" className="dropzone" data-dragging="false" role="button" tabIndex={0} style={{ padding: "46px 24px", opacity: isEngineLoading ? 0.6 : 1, pointerEvents: isEngineLoading ? 'none' : 'auto', marginBottom: '28px', border: '2px dashed var(--border)', borderRadius: 'var(--radius)', background: 'linear-gradient(180deg, var(--card), var(--bg-soft))', textAlign: 'center', cursor: 'pointer', transition: '0.2s' }}>
@@ -104,12 +104,12 @@ export default function VideoPreview() {
             {isEngineLoading ? "Loading engine..." : "Ready to process"}
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
             <button id="detectBtn" type="button" className="btn btn-ghost" style={{ display: "none" }}>Detect</button>
-            <button id="resetBtn" type="button" className="btn btn-ghost" style={{ minWidth: '140px', padding: '12px 24px' }}>Change File</button>
-            <button id="processBtn" className="btn btn-primary" type="button" style={{ minWidth: '200px', padding: '12px 24px', fontSize: '15px' }}>Auto Clean & Export</button>
-            <a id="downloadBtn" className="btn btn-primary" style={{ minWidth: '200px', padding: '12px 24px', fontSize: '15px', background: "var(--accent)", display: "none", justifyContent: 'center' }} aria-disabled="true">
-              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <button id="resetBtn" type="button" className="btn btn-ghost" style={{ flex: '1', padding: '12px 16px', whiteSpace: 'nowrap' }}>Change File</button>
+            <button id="processBtn" className="btn btn-primary" type="button" style={{ flex: '1.5', padding: '12px 16px', fontSize: '15px', whiteSpace: 'nowrap' }}>Auto Clean & Export</button>
+            <a id="downloadBtn" className="btn btn-primary" style={{ flex: '1.5', padding: '12px 16px', fontSize: '15px', background: "var(--accent)", display: "none", justifyContent: 'center', whiteSpace: 'nowrap' }} aria-disabled="true">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px', flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
               Download Result
             </a>
           </div>
