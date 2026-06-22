@@ -24,7 +24,7 @@ export default function Home() {
       <section className="hero" style={{ paddingBottom: 0 }}>
         <div className="wrap">
           <div className="hero-badge"><span className="dot" /> 100% local · No upload · No sign-up</div>
-          <h1>Free Gemini<br /><span className="gradient-text">Watermark Remover</span></h1>
+          <h1>Free Gemini<br /><span className="free-shine">Watermark Remover</span></h1>
           <p className="sub">
             Free online Gemini watermark cleaner for images, logos, and star overlays.
             No upload, no sign-up — 100% local, private processing.

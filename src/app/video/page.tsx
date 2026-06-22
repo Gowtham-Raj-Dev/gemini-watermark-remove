@@ -32,7 +32,7 @@ export default function VideoPreview() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className="hero-badge"><span className="dot" /> 100% local · No upload · No sign-up</div>
           </div>
-          <h1><span className="free-shine">Free</span> <span className="gradient-text">Video</span><br />Watermark Remover</h1>
+          <h1>Free Video<br /><span className="free-shine">Watermark Remover</span></h1>
           <p className="sub">
             Erase Gemini watermarks, logos, and overlays from a single MP4, WebM, or MOV video.
             Processing happens rapidly and entirely on your device.
@@ -45,15 +45,15 @@ export default function VideoPreview() {
         </div>
       </section>
 
-      {/* VIDEO APP SHELL */}
-      <div className="shell video-preview-shell" style={{ paddingTop: 0 }}>
+      {/* TOOL AREA */}
+      <div className="tool" id="tool" style={{ marginTop: '44px', maxWidth: '940px', margin: '44px auto 0' }}>
         
         {/* DROPZONE */}
-        <div id="dropzone" className="dropzone" data-dragging="false" role="button" tabIndex={0} style={{ padding: "46px 24px", opacity: isEngineLoading ? 0.6 : 1, pointerEvents: isEngineLoading ? 'none' : 'auto', marginBottom: '28px' }}>
-          <div className="icon" style={{ color: 'var(--brand)' }}>
+        <div id="dropzone" className="dropzone" data-dragging="false" role="button" tabIndex={0} style={{ padding: "46px 24px", opacity: isEngineLoading ? 0.6 : 1, pointerEvents: isEngineLoading ? 'none' : 'auto', marginBottom: '28px', border: '2px dashed var(--border)', borderRadius: 'var(--radius)', background: 'linear-gradient(180deg, var(--card), var(--bg-soft))', textAlign: 'center', cursor: 'pointer', transition: '0.2s' }}>
+          <div className="icon" style={{ color: 'var(--brand)', margin: '0 auto 16px', width: '56px', height: '56px', borderRadius: '14px', background: 'rgba(66,133,244,.12)', display: 'grid', placeItems: 'center' }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </div>
-          <h3 style={{ fontSize: '19px', margin: '0 0 6px 0' }}>Drag & drop a video here</h3>
+          <h3 style={{ fontSize: '19px', margin: '0 0 6px 0', fontWeight: 600 }}>Drag & drop a video here</h3>
           <p style={{ color: 'var(--muted)', fontSize: '14px', margin: 0 }}>or click to browse — processing happens 100% on your device</p>
           <div className="formats" style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '16px' }}>
             <span className="fmt" style={{ fontSize: '12px', color: 'var(--muted)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '7px', background: 'var(--bg-soft)' }}>MP4</span>
@@ -63,95 +63,92 @@ export default function VideoPreview() {
           <input id="fileInput" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" hidden disabled={isEngineLoading} />
         </div>
 
-        <main className="layout">
-          {/* LEFT: VERTICAL PLAYER GRID */}
-          <section className="workspace" aria-label="Video Comparison">
-            <div className="panel">
-              <div className="panel-head"><span>Before / After Comparison</span><span id="progressText" style={{ color: "var(--brand-dark)", fontSize: '13px' }}>Waiting for video</span></div>
-              
-              <div id="comparePlayer" className="compare-player" style={{ borderBottom: '1px solid var(--border)', aspectRatio: '21/9' }}>
-                <div className="compare-pane" style={{ background: "transparent" }}>
-                  <span className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }}>Before</span>
-                  <video id="originalVideo" loop playsInline preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
-                  <div id="originalEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '13px' }}>Select or drop a video</div>
-                </div>
-                <div className="compare-pane" style={{ background: "transparent", borderLeft: "1.5px solid var(--border)" }}>
-                  <span id="afterBadge" className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }} hidden>After</span>
-                  <video id="processedVideo" loop playsInline preload="metadata" muted style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
-                  <div id="processedEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '13px' }}>Comparison will be shown here</div>
-                </div>
-              </div>
-              
-              <div className="compare-controls">
-                <button id="playPauseBtn" className="play-toggle" type="button" data-playing="false" aria-label="Play" disabled></button>
-                <input id="scrubber" type="range" min="0" max="1000" defaultValue="0" aria-label="Play Progress" disabled />
-                <span id="timeLabel" className="time-label">0:00</span>
-              </div>
-            </div>
-          </section>
+        {/* COMPARISON PANEL */}
+        <div className="panel comparison-panel" style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', marginBottom: '24px' }}>
+          <div className="panel-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--border)', background: 'var(--bg-soft)', fontSize: '14px', fontWeight: 600 }}>
+            <span>Before / After Comparison</span>
+            <span id="progressText" style={{ color: "var(--brand)", fontSize: '13px' }}>Waiting for video</span>
+          </div>
 
-          {/* RIGHT: SETTINGS / STATUS PANEL */}
-          <aside className="side" aria-label="Processing Settings">
-            <div className="panel">
-              <div className="panel-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>Controls & Status</span>
-              </div>
-              <div className="controls">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--muted)' }}>Processing Status</span>
-                </div>
-                <div className="progress" aria-label="Processing Progress"><span id="progressBar" style={{ width: isEngineLoading ? '100%' : '0%', background: isEngineLoading ? 'var(--border)' : 'var(--accent)' }}></span></div>
-                <div id="status" className="status" data-tone="info" style={{ marginTop: '16px', textAlign: 'center', fontSize: '13px', padding: '10px', background: 'var(--bg-soft)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  {isEngineLoading ? "Loading..." : "Ready to process"}
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '24px auto 12px' }}>
-                  <button id="detectBtn" type="button" className="btn btn-ghost" style={{ display: "none" }}>Detect</button>
-                  <button id="resetBtn" type="button" className="btn btn-ghost" style={{ width: '100%', padding: '12px' }}>Change File</button>
-                  <button id="processBtn" className="btn btn-primary" type="button" style={{ width: '100%', padding: '12px' }}>Auto Clean & Export</button>
-                  <a id="downloadBtn" className="btn btn-primary" style={{ background: "var(--accent)", display: "none", width: '100%', padding: '12px', justifyContent: 'center' }} aria-disabled="true">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download Result
-                  </a>
-                </div>
-
-                <div className="internal-controls" hidden>
-                  <span id="alphaGainValue">1.00</span>
-                  <input id="alphaGain" type="range" min="0.25" max="1.35" step="0.05" />
-                  <input id="adaptiveAlpha" type="checkbox" />
-                  <input id="highQualityCleanup" type="checkbox" />
-                  <select id="denoiseBackend">
-                    <option value="none">Off</option>
-                    <option value="canvas-edge-denoise">Canvas Edge Denoise</option>
-                    <option value="canvas-edge-band-denoise">Canvas Edge Band Denoise</option>
-                    <option value="canvas-edge-core-denoise">Canvas Edge Core Denoise</option>
-                    <option value="canvas-footprint-polish">Canvas Footprint Polish</option>
-                    <option value="canvas-temporal-delta-stabilize">Canvas Temporal Delta Stabilize</option>
-                    <option value="canvas-temporal-match-delta-stabilize">Canvas Temporal Match Delta Stabilize</option>
-                    <option value="canvas-temporal-stabilize">Canvas Temporal Stabilize</option>
-                    <option value="canvas-texture-repair">Canvas Texture Repair</option>
-                    <option value="allenk-fdncnn-browser-spike">AI FDnCNN ONNX</option>
-                  </select>
-                  <button id="relocatedReviewPresetBtn" type="button">Relocated Review Preset</button>
-                  <span id="edgeDenoiseStrengthValue">0.25</span>
-                  <input id="edgeDenoiseStrength" type="range" min="0" max="1" step="0.05" />
-                  <span id="residualCleanupValue">1.50</span>
-                  <input id="residualCleanup" type="range" min="0" max="1.80" step="0.05" />
-                  <input id="sampleCount" type="number" min="1" max="24" step="1" />
-                  <input id="videoBitrateMbps" type="number" min="1" max="80" step="0.5" />
-                  <input id="allowLowConfidence" type="checkbox" />
-                </div>
-              </div>
-              <div className="note" style={{ fontSize: "12px", textAlign: "center", borderTop: '1px solid var(--border)', padding: '12px' }}>Video track is re-encoded. Audio passed through.</div>
+          <div id="comparePlayer" className="compare-player" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--bg-soft2)', aspectRatio: '21/9' }}>
+            <div className="compare-pane" style={{ position: 'relative', borderRight: '1.5px solid var(--border)' }}>
+              <span className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }}>Before</span>
+              <video id="originalVideo" loop playsInline preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
+              <div id="originalEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '14px' }}>Select or drop a video</div>
             </div>
-
-            <div className="panel" style={{ display: 'none' }}>
-              <div className="panel-head">Details</div>
-              <div id="metadata" style={{ fontSize: "13px" }}></div>
-              <div id="detection" style={{ fontSize: "13px", display: "none" }}></div>
+            <div className="compare-pane" style={{ position: 'relative' }}>
+              <span id="afterBadge" className="badge label" style={{ position: 'absolute', top: '12px', left: '12px', fontSize: '12px', fontWeight: 600, color: '#fff', zIndex: 10, padding: '5px 11px', borderRadius: '7px', backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,.42)' }} hidden>After</span>
+              <video id="processedVideo" loop playsInline preload="metadata" muted style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}></video>
+              <div id="processedEmpty" className="empty photo" style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: '14px' }}>Comparison will be shown here</div>
             </div>
-          </aside>
-        </main>
+          </div>
+
+          <div className="compare-controls" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 20px', background: 'var(--bg-soft)', borderTop: '1px solid var(--border)' }}>
+            <button id="playPauseBtn" className="play-toggle" type="button" data-playing="false" aria-label="Play" disabled style={{ width: '36px', height: '36px', padding: 0, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', display: 'grid', placeItems: 'center', cursor: 'pointer' }}></button>
+            <input id="scrubber" type="range" min="0" max="1000" defaultValue="0" aria-label="Play Progress" disabled style={{ flex: 1, accentColor: 'var(--brand)' }} />
+            <span id="timeLabel" className="time-label" style={{ fontSize: '13px', color: 'var(--muted)', minWidth: '44px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>0:00</span>
+          </div>
+        </div>
+
+        {/* PROCESSING CONTROLS */}
+        <div className="panel controls-panel" style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>Processing Status</span>
+          </div>
+          
+          <div className="progress" aria-label="Processing Progress" style={{ height: '8px', background: 'var(--bg-soft2)', borderRadius: '4px', overflow: 'hidden' }}>
+            <span id="progressBar" style={{ display: 'block', height: '100%', width: isEngineLoading ? '100%' : '0%', background: isEngineLoading ? 'var(--border)' : 'var(--brand)', transition: 'width 0.2s ease' }}></span>
+          </div>
+          
+          <div id="status" className="status" data-tone="info" style={{ marginTop: '16px', textAlign: 'center', fontSize: '14px', padding: '12px', background: 'var(--bg-soft)', borderRadius: '8px', border: '1px solid var(--border)', color: 'var(--muted)' }}>
+            {isEngineLoading ? "Loading engine..." : "Ready to process"}
+          </div>
+
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
+            <button id="detectBtn" type="button" className="btn btn-ghost" style={{ display: "none" }}>Detect</button>
+            <button id="resetBtn" type="button" className="btn btn-ghost" style={{ minWidth: '140px', padding: '12px 24px' }}>Change File</button>
+            <button id="processBtn" className="btn btn-primary" type="button" style={{ minWidth: '200px', padding: '12px 24px', fontSize: '15px' }}>Auto Clean & Export</button>
+            <a id="downloadBtn" className="btn btn-primary" style={{ minWidth: '200px', padding: '12px 24px', fontSize: '15px', background: "var(--accent)", display: "none", justifyContent: 'center' }} aria-disabled="true">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              Download Result
+            </a>
+          </div>
+
+          <div className="internal-controls" hidden>
+            <span id="alphaGainValue">1.00</span>
+            <input id="alphaGain" type="range" min="0.25" max="1.35" step="0.05" />
+            <input id="adaptiveAlpha" type="checkbox" />
+            <input id="highQualityCleanup" type="checkbox" />
+            <select id="denoiseBackend">
+              <option value="none">Off</option>
+              <option value="canvas-edge-denoise">Canvas Edge Denoise</option>
+              <option value="canvas-edge-band-denoise">Canvas Edge Band Denoise</option>
+              <option value="canvas-edge-core-denoise">Canvas Edge Core Denoise</option>
+              <option value="canvas-footprint-polish">Canvas Footprint Polish</option>
+              <option value="canvas-temporal-delta-stabilize">Canvas Temporal Delta Stabilize</option>
+              <option value="canvas-temporal-match-delta-stabilize">Canvas Temporal Match Delta Stabilize</option>
+              <option value="canvas-temporal-stabilize">Canvas Temporal Stabilize</option>
+              <option value="canvas-texture-repair">Canvas Texture Repair</option>
+              <option value="allenk-fdncnn-browser-spike">AI FDnCNN ONNX</option>
+            </select>
+            <button id="relocatedReviewPresetBtn" type="button">Relocated Review Preset</button>
+            <span id="edgeDenoiseStrengthValue">0.25</span>
+            <input id="edgeDenoiseStrength" type="range" min="0" max="1" step="0.05" />
+            <span id="residualCleanupValue">1.50</span>
+            <input id="residualCleanup" type="range" min="0" max="1.80" step="0.05" />
+            <input id="sampleCount" type="number" min="1" max="24" step="1" />
+            <input id="videoBitrateMbps" type="number" min="1" max="80" step="0.5" />
+            <input id="allowLowConfidence" type="checkbox" />
+          </div>
+
+          <div className="note" style={{ fontSize: "13px", textAlign: "center", color: 'var(--muted)', marginTop: '20px' }}>Video track is re-encoded. Audio passed through.</div>
+        </div>
+
+        <div className="panel" style={{ display: 'none' }}>
+          <div className="panel-head">Details</div>
+          <div id="metadata" style={{ fontSize: "13px" }}></div>
+          <div id="detection" style={{ fontSize: "13px", display: "none" }}></div>
+        </div>
       </div>
 
       {/* SEO & FEATURES SECTION */}

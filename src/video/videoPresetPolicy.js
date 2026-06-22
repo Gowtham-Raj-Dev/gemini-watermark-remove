@@ -4,12 +4,12 @@ import {
 } from './videoCleanupBackends.js';
 
 const RELOCATED_MARGIN_RATIO = 1.8;
-const DEFAULT_AUTO_SAMPLE_COUNT = 2;
-const DEFAULT_AUTO_ALPHA_GAIN = 1;
-const DEFAULT_AUTO_AI_EDGE_DENOISE_STRENGTH = 1.8;
-const DEFAULT_AUTO_AI_RESIDUAL_CLEANUP_STRENGTH = 0.4;
-const DEFAULT_VEO_TEXT_AI_EDGE_DENOISE_STRENGTH = 1.45;
-const DEFAULT_VEO_TEXT_AI_RESIDUAL_CLEANUP_STRENGTH = 0.9;
+const DEFAULT_AUTO_SAMPLE_COUNT = 30; // Increased for precise detection
+const DEFAULT_AUTO_ALPHA_GAIN = 1.12;
+const DEFAULT_AUTO_AI_EDGE_DENOISE_STRENGTH = 2.85; // Max out AI edge polish
+const DEFAULT_AUTO_AI_RESIDUAL_CLEANUP_STRENGTH = 1.8; // Max out AI footprint cleanup
+const DEFAULT_VEO_TEXT_AI_EDGE_DENOISE_STRENGTH = 2.45;
+const DEFAULT_VEO_TEXT_AI_RESIDUAL_CLEANUP_STRENGTH = 1.5;
 
 export function isRelocatedVideoWatermarkPosition(position) {
     if (!position || !Number.isFinite(position.width) || position.width <= 0) {
@@ -56,13 +56,13 @@ export function getRelocatedReviewPresetConfig() {
         label: 'AI Auto Processing',
         description: 'Automatically detects watermark position and cleans it using an AI model, no manual tuning required.',
         alphaGain: DEFAULT_AUTO_ALPHA_GAIN,
-        adaptiveAlpha: false,
-        highQualityCleanup: false,
-        denoiseBackend: VIDEO_DENOISE_BACKENDS.NONE,
-        edgeDenoiseStrength: 0,
-        residualCleanupStrength: 0,
+        adaptiveAlpha: true,
+        highQualityCleanup: true,
+        denoiseBackend: VIDEO_DENOISE_BACKENDS.ALLENK_FDNCNN_BROWSER_SPIKE,
+        edgeDenoiseStrength: DEFAULT_AUTO_AI_EDGE_DENOISE_STRENGTH,
+        residualCleanupStrength: DEFAULT_AUTO_AI_RESIDUAL_CLEANUP_STRENGTH,
         sampleCount: DEFAULT_AUTO_SAMPLE_COUNT,
-        videoBitrateMbps: 12,
+        videoBitrateMbps: 20,
         allowLowConfidence: true
     };
 }
@@ -70,16 +70,16 @@ export function getRelocatedReviewPresetConfig() {
 export function getStandardAutoPresetConfig() {
     return {
         id: 'standard-auto',
-        label: 'Fast Auto Processing',
-        description: 'By default, uses ultra-fast basic alpha blending to process bottom-right Gemini/Veo watermark.',
+        label: 'Standard AI Processing',
+        description: 'Uses AI model and alpha blending to cleanly process the Gemini/Veo watermark.',
         alphaGain: DEFAULT_AUTO_ALPHA_GAIN,
-        adaptiveAlpha: false,
-        highQualityCleanup: false,
-        denoiseBackend: VIDEO_DENOISE_BACKENDS.NONE,
-        edgeDenoiseStrength: 0,
-        residualCleanupStrength: 0,
+        adaptiveAlpha: true,
+        highQualityCleanup: true,
+        denoiseBackend: VIDEO_DENOISE_BACKENDS.ALLENK_FDNCNN_BROWSER_SPIKE,
+        edgeDenoiseStrength: DEFAULT_AUTO_AI_EDGE_DENOISE_STRENGTH,
+        residualCleanupStrength: DEFAULT_AUTO_AI_RESIDUAL_CLEANUP_STRENGTH,
         sampleCount: DEFAULT_AUTO_SAMPLE_COUNT,
-        videoBitrateMbps: '',
+        videoBitrateMbps: 20,
         allowLowConfidence: false
     };
 }
@@ -88,6 +88,7 @@ export function getVeoTextAutoPresetConfig() {
     return {
         ...getStandardAutoPresetConfig(),
         id: 'veo-text-auto',
+        denoiseBackend: VIDEO_DENOISE_BACKENDS.ALLENK_FDNCNN_BROWSER_SPIKE,
         edgeDenoiseStrength: DEFAULT_VEO_TEXT_AI_EDGE_DENOISE_STRENGTH,
         residualCleanupStrength: DEFAULT_VEO_TEXT_AI_RESIDUAL_CLEANUP_STRENGTH
     };

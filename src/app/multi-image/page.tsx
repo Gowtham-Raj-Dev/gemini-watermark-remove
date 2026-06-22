@@ -28,7 +28,7 @@ export default function ImagePreview() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className="hero-badge"><span className="dot" /> 100% local · No upload · No sign-up</div>
           </div>
-          <h1><span className="free-shine">Multi</span> <span className="gradient-text">Multiple Images</span><br />Watermark Remover</h1>
+          <h1>Multiple Images<br /><span className="free-shine">Watermark Remover</span></h1>
           <p className="sub">
             Clean watermarks, logos, and star overlays from dozens of JPG, PNG, and WebP images at once.
             Processing happens rapidly and entirely on your device.

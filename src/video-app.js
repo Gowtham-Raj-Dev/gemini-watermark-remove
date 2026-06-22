@@ -876,7 +876,7 @@ async function runExport() {
             updateQueueItemStatus(i, 'done', 'Done');
             
             // Add download button to the queue item if it doesn't exist
-            const queueItem = els.fileQueueList.children[i];
+            const queueItem = els.fileQueueList?.children[i];
             if (queueItem && !queueItem.querySelector('.download-queue-btn')) {
                 const downBtn = document.createElement('a');
                 downBtn.href = state.processedUrl;
